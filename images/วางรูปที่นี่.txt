@@ -1,0 +1,2 @@
+วางไฟล์รูปภาพของคุณในโฟลเดอร์นี้
+ตั้งชื่อว่า photo1.jpg, photo2.jpg, photo3.jpg ... ตามที่ใช้ใน gallery.html

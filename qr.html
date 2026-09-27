@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>สร้าง QR สำหรับส่ง (ใช้เอง)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Mali:wght@400;600;700&family=Pacifico&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<!--
+  หน้านี้มีไว้ให้ "คุณ" ใช้เองหลังบ้าน ไม่ต้องส่งลิงก์หน้านี้ให้แฟนดู
+  วิธีใช้: หลังจากนำโปรเจกต์นี้ไปเผยแพร่ (เช่น Netlify Drop) แล้วได้ลิงก์เว็บมา
+  ให้เปิดไฟล์นี้ วางลิงก์ลงในช่อง แล้วกด "สร้าง QR" จะได้ QR โค้ด + ปุ่มคัดลอกลิงก์
+  ไว้ส่งให้แฟนแยกต่างหาก
+  
+-->
+<body class="qr-page">
+<main class="page">
+  <p class="script" style="font-size:clamp(1.6rem,6vw,2.2rem)">For You Only</p>
+  <div class="frame">
+    <h1 style="font-size:1.3rem">สร้าง QR / ลิงก์ไว้ส่งให้แฟน</h1>
+    <p style="color:var(--plum-soft); font-size:.95rem; margin-top:-6px">วางลิงก์เว็บของคุณ (หลัง deploy แล้ว) ลงด้านล่าง</p>
+    <div class="link-row">
+      <input id="linkInput" type="text" placeholder="https://your-site.netlify.app">
+      <button id="genBtn">สร้าง QR</button>
+    </div>
+    <div id="qrOut"></div>
+    <div class="link-row" id="copyRow" style="display:none">
+      <input id="linkShow" type="text" readonly>
+      <button id="copyBtn">คัดลอก</button>
+    </div>
+  </div>
+  <a class="btn-ghost" href="index.html">‹ กลับไปดูตัวเว็บ</a>
+</main>
+
+<script src="js/hearts.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<script>
+  const genBtn = document.getElementById('genBtn');
+  const linkInput = document.getElementById('linkInput');
+  const qrOut = document.getElementById('qrOut');
+  const copyRow = document.getElementById('copyRow');
+  const linkShow = document.getElementById('linkShow');
+
+  genBtn.addEventListener('click', () => {
+    const url = linkInput.value.trim();
+    if (!url) return;
+    try {
+      const qr = qrcode(0, 'M');
+      qr.addData(url);
+      qr.make();
+      qrOut.innerHTML = qr.createImgTag(5, 8);
+      linkShow.value = url;
+      copyRow.style.display = 'flex';
+    } catch (e) {
+      qrOut.textContent = 'สร้าง QR ไม่สำเร็จ ลองตรวจลิงก์อีกครั้ง';
+    }
+  });
+
+  document.getElementById('copyBtn').addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(linkShow.value);
+      const btn = document.getElementById('copyBtn');
+      const old = btn.textContent;
+      btn.textContent = 'คัดลอกแล้ว ✓';
+      setTimeout(() => btn.textContent = old, 1500);
+    } catch (e) { linkShow.select(); }
+  });
+</script>
+</body>
+</html>
